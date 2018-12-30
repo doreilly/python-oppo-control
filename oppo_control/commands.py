@@ -65,7 +65,7 @@ def get_event_for(data, requests):
     
     if request is not None:
         instance = request.Response(data)
-        if hasattr(instance.request, 'response_parser'):
+        if hasattr(request, 'response_parser'):
             request.response_parser(instance)
         else:
             instance.parse(data)
