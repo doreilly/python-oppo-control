@@ -49,7 +49,11 @@ class Update(OppoEvent, metaclass=UpdateMeta):
 
     def __init__(self, data):
         self.data = data
-    
+
+    def parse(self, data):
+        m = self.matcher.match(data)
+        return m.group('data')
+
 
 def get_event_for(data, requests):
     request = None
