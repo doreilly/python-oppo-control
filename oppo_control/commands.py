@@ -14,7 +14,7 @@ class ResponseMatcherMeta(type):
     def __new__(cls, name, bases, dct):
         klass = super().__new__(name, bases, dct)
 
-        match_expr = b'^%b%b (%b|%b)(?: (.*?))?%b$' % (
+        match_expr = b'^%b%b (?P<status>%b|%b)(?: (?P<data>.*?))?%b$' % (
             klass.start_byte, klass.code, klass.ok_code, klass.error_code,
             klass.end_byte)
 
@@ -38,7 +38,7 @@ class UpdateMeta(type):
 
         if klass.code is not None:
             _UPDATES[klass.code] = klass
-            matcher_expr = b'^@%b (.*?)\x0d$'
+            matcher_expr = b'^@%b (?P<data>.*?)\x0d$' % klass.code
             klass.matcher = re.compile(matcher_expr)
 
         return klass
@@ -47,6 +47,9 @@ class UpdateMeta(type):
 class Update(OppoEvent, metaclass=UpdateMeta):
     code = None
 
+    def __init__(self, data):
+        self.data = data
+    
 
 def get_event_for(data, requests):
     request = None
